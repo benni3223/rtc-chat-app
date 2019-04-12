@@ -6,28 +6,28 @@ const init = {
     selected: null,
     chats: {
         
-        "asdlsad": {
-            unreadMessages: 1,
-            username: "Hans Müller",
-            chatlog: [{
-                creator:"Hans Müller",
-                message: "Testmessage",
-                timestamp: new Date().toString()
-            }]
-        },
-        "fg242asdfas": {
-            unreadMessages: 0,
-            username: "Friedrich",
-            chatlog: [{
-                message: "Testmessage2",
-                timestamp: new Date().toString()
-            }]
-        },
-        "asfg23asd": {
-            unreadMessages: 0,
-            username: "Felix",
-            chatlog: []
-        }
+        // "asdlsad": {
+        //     unreadMessages: 1,
+        //     username: "Hans Müller",
+        //     chatlog: [{
+        //         creator:"Hans Müller",
+        //         message: "Testmessage",
+        //         timestamp: new Date().toString()
+        //     }]
+        // },
+        // "fg242asdfas": {
+        //     unreadMessages: 0,
+        //     username: "Friedrich",
+        //     chatlog: [{
+        //         message: "Testmessage2",
+        //         timestamp: new Date().toString()
+        //     }]
+        // },
+        // "asfg23asd": {
+        //     unreadMessages: 0,
+        //     username: "Felix",
+        //     chatlog: []
+        // }
     }
 
 }
@@ -46,11 +46,12 @@ export default (state = init, action) => {
                     chatlog: []
                 }
             }
-            if(state.selected !== action.payload.chatId) {
-                newState.chats[action.payload.chatId].unreadMessages++;
+            if(action.payload.message) {
+                if(state.selected !== action.payload.chatId) {
+                    newState.chats[action.payload.chatId].unreadMessages++;
+                }
+                newState.chats[action.payload.chatId].chatlog.push(action.payload.message);            
             }
-            newState.chats[action.payload.chatId].chatlog.push(action.payload.message);            
-
             return newState;
         case ACTIONS.selectChat:
             newState = {...state};

@@ -17,6 +17,10 @@ const styles = theme => ({
     listContainer: {
         overflowY: "auto",
         height: "calc( 100% - 48px)",
+    },
+    emptyIndicator: {
+        padding:20,
+        color:"#888"
     }
 });
 
@@ -38,7 +42,9 @@ class ChatList extends Component {
         if(allowed) {
             return <OpenChat key={chatId} chatId={chatId} chatObj={this.props.openChats[chatId]} />
         }
-
+    }
+    doChatExists() {
+        return Object.keys(this.props.openChats).length !== 0;
     }
 
     render() {
@@ -47,9 +53,16 @@ class ChatList extends Component {
             <div className={classes.root}>
                 <ListHeader title="Open Chats" filterKey={listID}/>
                 <div className={classes.listContainer}>
-                    <List>
-                    {Object.keys(this.props.openChats).map((chatId) => this.renderFilteredChat(chatId))}
-                    </List>
+                    {
+                        this.doChatExists() ? (
+                            
+                        <List>  
+                            {Object.keys(this.props.openChats).map((chatId) => this.renderFilteredChat(chatId))}
+                        </List>
+                        )
+                        : <p className={classes.emptyIndicator}>Select a user from the bottom list, to start a chat with him</p>
+
+                    }
                 </div>
             </div> 
         );
@@ -72,11 +85,11 @@ const mapStateToProps = state => ({
     filterValue: state.filter[listID]
 });
 const mapDispatchToProps = dispatch => ({
-addChatMessage: () => dispatch(addChatMessage())
+    addChatMessage: () => dispatch(addChatMessage())
 });
   
   
-  export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-  )(ChatList)
+export default compose(
+withStyles(styles, { withTheme: true }),
+connect(mapStateToProps, mapDispatchToProps)
+)(ChatList)

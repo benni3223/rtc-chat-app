@@ -74,7 +74,7 @@ const mapDispatchToProps = dispatch => ({
 });
   
   
-  export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-  )(OpenChat)
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
+)(OpenChat)

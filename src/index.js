@@ -1,15 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { render } from 'react-dom'
 import configureStore from './store';
 
 import './index.css';
-import App from './App';
+import ChatPage from './pages/ChatPage';
+import LoginPage from './pages/LoginPage';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
+import { Router, Route, Link, browserHistory } from 'react-router-3'
+
+
+
+render(
 <Provider store={configureStore()}>
-    <App />
+  <Router history={browserHistory}>
+    <Route path="/" component={ChatPage}/>
+    <Route path="login" component={LoginPage}/>
+  </Router>
 </Provider>, 
 document.getElementById('root'));
 

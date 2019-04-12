@@ -4,5 +4,8 @@ export const ACTIONS = {
     doFilter: "DO_FILTER",
     simpleAction: "SIMPLE_ACTION",
     addUser: "ADD_USER",
-    removeUser: "REMOVE_USER"
+    removeUser: "REMOVE_USER",
+
+    loginUser: "LOGIN_USER",
+    logoutUser: "LOGOUT_USER"
 }

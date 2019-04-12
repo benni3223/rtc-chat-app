@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 import TextField from '@material-ui/core/TextField';
-import { simpleAction } from '../actions/SimpleAction';
+import { addChatMessage } from '../actions/ChatActions';
 
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
@@ -17,9 +17,7 @@ const styles = theme => ({
     justifyContent:"center",
     alignItems:"center",
     background:"#ccc",
-    paddingLeft:15,
-    paddingRight:15,
-    paddingBottom:5
+    padding:10
   },
   inputField: {
     width:"100%",
@@ -39,6 +37,22 @@ class ChatInput extends Component {
     handleChange = () => event => {
       this.setState({ input: event.target.value });
     };
+    handleSendButtonClick = () => {
+      this.props.addChatMessage({
+        chatId: this.props.selectedChat,
+        message: {
+          message: this.state.input,
+          timestamp: new Date().toString()
+        }
+      });
+
+      this.setState({input: ""});
+    }
+    handleOnKeyDown = (event) => {
+      if(event.keyCode === 13 && event.ctrlKey) {
+        this.handleSendButtonClick();
+      }
+    }
 
     render() {
       const {classes} = this.props;
@@ -46,18 +60,23 @@ class ChatInput extends Component {
         return (
             <div className={classes.root}>
               <TextField
-                placeholder="Insert text here"
+                placeholder="Insert text here... You can use Ctrl+Enter to submit a message"
                 className={classes.inputField}
                 multiline
                 rowsMax="10"
                 variant="outlined"
+                onKeyDown={this.handleOnKeyDown}
                 value={this.state.input}
                 onChange={this.handleChange()}
-                margin="normal"
                 disabled={this.props.selectedChat === null}
               />
 
-              <IconButton className={classes.sendButton}  color="primary" disabled={this.props.selectedChat === null || this.state.input === ""} aria-label="Send message">
+              <IconButton className={classes.sendButton} 
+                  color="primary" 
+                  onClick={this.handleSendButtonClick}
+                  tabIndex="0"
+                  disabled={this.props.selectedChat === null || this.state.input === ""} 
+                  aria-label="Send message">
                 <SendIcon />
               </IconButton>
             </div>
@@ -69,9 +88,9 @@ class ChatInput extends Component {
 
 
 ChatInput.propTypes = {
-    classes: PropTypes.object.isRequired,
-    theme: PropTypes.object.isRequired,
-  };
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+};
   
     
 
@@ -79,11 +98,11 @@ const mapStateToProps = state => ({
   selectedChat: state.openChats.selected
 });
 const mapDispatchToProps = dispatch => ({
-  simpleAction: () => dispatch(simpleAction())
+  addChatMessage: (chatObj) => dispatch(addChatMessage(chatObj))
 });
 
-  
-  export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-  )(ChatInput)
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
+)(ChatInput)

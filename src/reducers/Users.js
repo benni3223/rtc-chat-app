@@ -2,15 +2,15 @@ import { ACTIONS } from "../actions/Actions";
 
 const initialUsers = [
     {
-        id: 1,
+        id: "ksdgjsdjn",
         username: "Felix"
     },
     {
-        id: 2,
+        id: "jaisofühas",
         username: "Frank"
     },
     {
-        id: 3,
+        id: "asfasfg",
         username: "Friedrich"
     }
 ]

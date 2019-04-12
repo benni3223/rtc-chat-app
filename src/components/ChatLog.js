@@ -3,7 +3,6 @@ import compose from 'recompose/compose'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { addChatMessage } from '../actions/ChatActions';
 
 
 import IconButton from '@material-ui/core/IconButton';
@@ -12,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import ChatMessage from './ChatMessage';
+import Avatar from '@material-ui/core/Avatar';
 import ChatInput from './ChatInput';
 
 const styles = theme => ({
@@ -45,20 +45,18 @@ const styles = theme => ({
   noChatIndicator: {
     textAlign:"center",
     color:"#222"
+  }, 
+  openChatHeader: {
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  avatar: {
+    marginRight: 10
   }
 });
 class ChatLog extends Component {
 
-  addChatMessage = () => {
-    this.props.addChatMessage({
-      chatId: "asdasdfasfsa",
-      username: "Username",
-      message: {
-          message: "asldaksdlaskdlakdlsakd",
-          timestamp: "04.12.2012 10:21:12"
-      }
-    } );
-  }
   handleDrawerToggle = () => {
     this.props.onDrawerToggle();
   }
@@ -107,10 +105,17 @@ class ChatLog extends Component {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" color="inherit" noWrap>
-                  {this.props.openChat ? this.props.openChat.username : ""}
-                </Typography>
-              <button onClick={this.addChatMessage}>Test redux action</button>
+                {
+                  this.props.openChat ? (
+                    <div className={classes.openChatHeader}>
+                      <Avatar className={classes.avatar}>{this.props.openChat.username[0]}
+                      </Avatar>
+                      <Typography variant="h6" color="inherit" noWrap>
+                        {this.props.openChat ? this.props.openChat.username : ""}
+                      </Typography>
+                    </div>
+                  ) : undefined
+                }
               </Toolbar>
             </AppBar>
             <div className={classes.mainContainer}>
@@ -142,16 +147,15 @@ ChatLog.propTypes = {
     
 
 const mapStateToProps = (state, ownProps) => ({
-    selected: state.openChats.selected,
-    openChat: state.openChats.chats[state.openChats.selected],
-   // chatlog: state.openChats.chats[state.openChats.selected]? state.openChats.chats[state.openChats.selected].chatlog : undefined
-  });
-  const mapDispatchToProps = dispatch => ({
-    addChatMessage: (msg) => dispatch(addChatMessage(msg))
-  });
+  selected: state.openChats.selected,
+  openChat: state.openChats.chats[state.openChats.selected],
+  // chatlog: state.openChats.chats[state.openChats.selected]? state.openChats.chats[state.openChats.selected].chatlog : undefined
+});
+const mapDispatchToProps = dispatch => ({
+});
   
-  
-  export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-  )(ChatLog)
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
+)(ChatLog)

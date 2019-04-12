@@ -7,11 +7,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { simpleAction } from '../actions/SimpleAction';
 
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import ListHeader from './ListHeader';
 import User from './User'
 
@@ -22,6 +17,10 @@ const styles = theme => ({
   listContainer: {
       overflowY: "auto",
       height: "calc( 100% - 48px)",
+  },
+  emptyIndicator: {
+      padding:20,
+      color:"#888"
   }
 });
 const listID = "userList";
@@ -49,9 +48,13 @@ class UserList extends Component {
           <div className={classes.root}>
               <ListHeader  title="Users Online"  filterKey={listID}/>
                 <div className={classes.listContainer}> 
-                    <List>
-                      { this.props.users.map((userObj, index) => this.renderFilteredUser(userObj, index))}
-                    </List>
+                  {
+                    this.props.users.length !== 0 ? (
+                      <List>
+                        { this.props.users.map((userObj, index) => this.renderFilteredUser(userObj, index))}
+                      </List>
+                    ) : <p className={classes.emptyIndicator}>There is no other user online currently, please stay tuned and inform your buddy about this peer-to-peer communication service</p>
+                  }
                 </div>
 
             </div>
@@ -77,8 +80,8 @@ const mapDispatchToProps = dispatch => ({
   simpleAction: () => dispatch(simpleAction())
 });
   
-  
-  export default compose(
-    withStyles(styles, { withTheme: true }),
-    connect(mapStateToProps, mapDispatchToProps)
-  )(UserList)
+
+export default compose(
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
+)(UserList)
