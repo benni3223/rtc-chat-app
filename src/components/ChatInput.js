@@ -38,6 +38,7 @@ class ChatInput extends Component {
       this.setState({ input: event.target.value });
     };
     handleSendButtonClick = () => {
+      this.props.rtcService.sendMessage(this.props.selectedChat, this.state.input);
       this.props.addChatMessage({
         chatId: this.props.selectedChat,
         message: {
@@ -95,6 +96,8 @@ ChatInput.propTypes = {
     
 
 const mapStateToProps = state => ({
+  
+  rtcService: state.services.rtcService,
   selectedChat: state.openChats.selected
 });
 const mapDispatchToProps = dispatch => ({

@@ -9,15 +9,17 @@ import LoginPage from './pages/LoginPage';
 import * as serviceWorker from './serviceWorker';
 
 import { Router, Route, Link, browserHistory } from 'react-router-3'
-
+import RTCProvider from './provider/RTCProvider';
 
 
 render(
 <Provider store={configureStore()}>
-  <Router history={browserHistory}>
-    <Route path="/" component={ChatPage}/>
-    <Route path="login" component={LoginPage}/>
-  </Router>
+    <RTCProvider url="localhost:8080">
+        <Router history={browserHistory}>
+            <Route path="/" component={ChatPage}/>
+            <Route path="login" component={LoginPage}/>
+        </Router>
+  </RTCProvider>
 </Provider>, 
 document.getElementById('root'));
 

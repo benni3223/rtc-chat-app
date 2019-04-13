@@ -5,7 +5,9 @@ export const ACTIONS = {
     simpleAction: "SIMPLE_ACTION",
     addUser: "ADD_USER",
     removeUser: "REMOVE_USER",
+    setUsers: "SET_USERS",
 
     loginUser: "LOGIN_USER",
-    logoutUser: "LOGOUT_USER"
+    logoutUser: "LOGOUT_USER",
+    registerService: "REGISTER_SERVICE"
 }

@@ -16,6 +16,13 @@ import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 
 const styles = theme => ({
   root: {
@@ -37,7 +44,9 @@ const styles = theme => ({
 
 class LoginPage extends Component {
     state = {
-        loading: false
+        loading: false,
+        errorMessage: "",
+        errorDialogOpen: false
     }
 
     handleChange = name => event => {
@@ -49,12 +58,19 @@ class LoginPage extends Component {
         }
     }
     handleSubmit = () => {
-
-        setTimeout(() => {
-            this.props.loginUser("asdas", this.state.username);
-             this.props.router.push("/");
-        }, 400)
         this.setState({loading: true});
+        this.props.rtcService.login(this.state.username, 
+            (easyrtcid) => {
+                this.props.loginUser("asdas", this.state.username);
+                this.props.router.push("/");
+
+            }, (errorCode, message) => {
+                this.setState({loading:false, errorMessage: message, errorDialogOpen: true});
+                console.log(errorCode + ": "+ message);
+            });
+    }
+    handleDialogClose = () => {
+        this.setState({errorDialogOpen: false});
     }
     render() {
         const { loading } = this.state;
@@ -108,6 +124,26 @@ class LoginPage extends Component {
                 </CardContent>
             </Card>
             
+
+            
+        <Dialog
+          open={this.state.errorDialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle>{"Error"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {this.state.errorMessage}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDialogClose} color="primary" autoFocus>
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
         </div>
         );
 
@@ -122,7 +158,8 @@ LoginPage.propTypes = {
 
 
 const mapStateToProps = state => ({
-    userConfig: state.userConfig
+    userConfig: state.userConfig,
+    rtcService: state.services.rtcService
 });
 const mapDispatchToProps = dispatch => ({
     loginUser: (userId, username) => dispatch(loginUser(userId, username))
