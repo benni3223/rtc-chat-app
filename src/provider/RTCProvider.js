@@ -48,10 +48,12 @@ class RTCProvider extends React.Component{
         );
     }
     sendData = (receiverId, type, data) => {
-        window.easyrtc.sendDataWS(receiverId, type, data);
+        window.easyrtc.sendDataWS(receiverId, type, data, (msg) => {
+            console.log(msg);
+        });
     }
     sendMessage = (receiverId, message) => {
-        window.easyrtc.sendDataWS(receiverId, "message",             
+        this.sendData(receiverId, "message",             
             JSON.stringify({
                     creator: this.props.userConfig.username,
                     message: message,

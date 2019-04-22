@@ -14,7 +14,7 @@ import RTCProvider from './provider/RTCProvider';
 
 render(
 <Provider store={configureStore()}>
-    <RTCProvider url="localhost:8080">
+    <RTCProvider url="localhost:8081">
         <Router history={browserHistory}>
             <Route path="/" component={ChatPage}/>
             <Route path="login" component={LoginPage}/>

@@ -28,10 +28,10 @@ const styles = theme => ({
   rootOwnMessage: {
     justifyContent:"flex-end"
   },
-  message: {
+  messageContainer: {
     maxWidth:"80%",
     minWidth:"40%",
-    padding:"10px"
+    padding:"10px",
   },
   ownMessage: {
     backgroundColor: "#e6e6ff",
@@ -44,6 +44,11 @@ const styles = theme => ({
   metaData: {
     display:"flex",
     justifyContent:"space-between"
+  },
+  message: {
+    wordBreak:"break-all",
+    whiteSpace:"normal"
+
   }
 });
 class ChatMessage extends Component {
@@ -77,7 +82,7 @@ class ChatMessage extends Component {
       const rootClasses = classNames(rootClassesObj);
 
       var cardClassesObj = {};
-      cardClassesObj[classes.message] = true;
+      cardClassesObj[classes.messageContainer] = true;
       cardClassesObj[classes.ownMessage] = isSendByUser;
       cardClassesObj[classes.receivedMessage] = !isSendByUser;
       const cardClasses = classNames(cardClassesObj);
@@ -95,7 +100,7 @@ class ChatMessage extends Component {
                       {moment(messageObject.timestamp).fromNow() }
                     </Typography>
                   </div>
-                  <div dangerouslySetInnerHTML={this.createMessageMarkUp()}>
+                  <div className={classes.message} dangerouslySetInnerHTML={this.createMessageMarkUp()}>
                     
                   </div>
                   
