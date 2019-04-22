@@ -15,13 +15,14 @@ import ChatList from '../components/ChatList';
 import UserList from '../components/UserList';
 
 import ChatLog from '../components/ChatLog';
+import CallNotifierContainer from './../components/CallNotifierContainer';
 
 
 const drawerWidth = 300;
 
 const styles = theme => ({
   root: {
-    display: 'flex',
+    display: 'flex', 
     height: "100%"
   },
   drawer: {
@@ -101,8 +102,10 @@ class ChatPage extends Component {
             </Drawer>
         </Hidden>
         </nav>
-
+          
         <ChatLog onDrawerToggle={this.handleDrawerToggle} />
+
+        <CallNotifierContainer/>
     </div>
     );
   }

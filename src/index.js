@@ -11,14 +11,23 @@ import * as serviceWorker from './serviceWorker';
 import { Router, Route, Link, browserHistory } from 'react-router-3'
 import RTCProvider from './provider/RTCProvider';
 
+import VideoDialog from './components/VideoDialog';
 
+
+const videoSelfId = "vid-self";
+const videoContactId = "vid-contact";
+const serverUrl = "localhost:8081"
 render(
 <Provider store={configureStore()}>
-    <RTCProvider url="localhost:8081">
+    <RTCProvider url={serverUrl}  videoSelfId={videoSelfId} videoContactId={videoContactId}>
         <Router history={browserHistory}>
             <Route path="/" component={ChatPage}/>
             <Route path="login" component={LoginPage}/>
         </Router>
+        <VideoDialog videoSelfId={videoSelfId} videoContactId={videoContactId}/>
+
+
+
   </RTCProvider>
 </Provider>, 
 document.getElementById('root'));

@@ -9,5 +9,12 @@ export const ACTIONS = {
 
     loginUser: "LOGIN_USER",
     logoutUser: "LOGOUT_USER",
-    registerService: "REGISTER_SERVICE"
+    registerService: "REGISTER_SERVICE",
+
+    startVideoCall: "START_VIDEO_CALL",
+    endVideoCall: "END_VIDEO_CALL",
+    acceptVideoCall: "ACCEPT_VIDEO_CALL",
+    rejectVideoCall: "REJECT_VIDEO_CALL",
+    addPendingVideoCall: "ADD_PENDING_VIDEO_CALL",
+    switchDisplayElement: "SWITCH_DISPLAY_ELEMENT"
 }

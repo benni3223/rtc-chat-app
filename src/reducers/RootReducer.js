@@ -4,7 +4,10 @@ import openChats from "./OpenChats";
 import filter from "./Filter";
 import users from "./Users";
 import userConfig from './UserConfig';
-import services from './Services'
+import services from './Services';
+import videoCallOptions from './VideoCallOptions';
+
+
 
 export default combineReducers({
     openChats,
@@ -12,5 +15,6 @@ export default combineReducers({
     users,
     userConfig,
     simpleReducer,
-    services
+    services,
+    videoCallOptions
 }); 

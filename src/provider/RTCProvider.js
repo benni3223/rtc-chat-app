@@ -6,6 +6,8 @@ import {setUsers} from './../actions/UserActions';
 import {registerService} from './../actions/ServiceActions';
 import {addChatMessage} from './../actions/ChatActions';
 
+import {startVideoCall, endVideoCall, acceptVideoCall, addPendingVideoCall, rejectVideoCall} from './../actions/VideoCallActions';
+
 const loginTimeout = 5000;
 
 class RTCProvider extends React.Component{
@@ -22,10 +24,112 @@ class RTCProvider extends React.Component{
                 'force new connection': true
             });
         }
+        
+        window.easyrtc.enableAudio(true);
+        window.easyrtc.enableVideo(true);
+        window.easyrtc.enableDataChannels(true);
+        
         window.easyrtc.setPeerListener(this.peerListener);
         window.easyrtc.setRoomOccupantListener(this.roomOccupantListener);
 
+        window.easyrtc.setOnStreamClosed(this.handleStreamClose);
+        window.easyrtc.setCallCancelled(this.handleCallCanceled);
+        window.easyrtc.setStreamAcceptor(this.handleStreamAcceptor);
+        window.easyrtc.setAcceptChecker(this.handleAcceptChecker);
+
         this.props.registerService("rtcService", this);
+    }
+
+    handleStreamClose = (easyrtcid) => {
+        this.stopCall();
+    }
+    handleCallCanceled = (easyrtcid) => {
+        console.log("handleStreamAcceptor: "+easyrtcid);
+        this.props.rejectVideoCall(easyrtcid);
+        //     if( easyrtcid === callerPending) {
+        //         document.getElementById('acceptCallBox').style.display = "none";
+        //         callerPending = false;
+        //     }
+    }
+    handleStreamAcceptor = (easyrtcid, stream) => {
+        this.props.startVideoCall();
+        setTimeout(() => {
+
+            console.log("handleStreamAcceptor: "+easyrtcid);
+            var video = document.getElementById(this.props.videoContactId);
+            window.easyrtc.setVideoObjectSrc(video,stream);
+            setTimeout(() => this.enableMirror(), 5000);
+        }, 500);
+
+    }
+    handleAcceptChecker = (easyrtcid, callback) => {
+        console.log("handleAcceptChecker: "+easyrtcid);
+        var acceptCallback = () => {
+            callback(true);
+        }
+        var rejectCallback = () => {
+            callback(false);
+        }
+        this.props.addPendingVideoCall(easyrtcid, acceptCallback, rejectCallback);
+    }
+
+    getUsernameFromId(easyrtcid) {
+        return window.easyrtc.idToName(easyrtcid);
+    }
+
+    startCall = (otherEasyrtcid) => {
+        this.hangupAll();
+        
+        var acceptedCB = (accepted, easyrtcid) => {
+            if( !accepted ) {
+                window.easyrtc.showError("CALL-REJECTEd", "Sorry, your call to " + this.getUsernameFromId(easyrtcid) + " was rejected");
+                
+            }
+        };
+
+        var successCB = (msg) => {
+            console.log("i started videosetream");
+            console.log(msg);
+            if( window.easyrtc.getLocalStream()) {
+                this.enableMirror();
+            }
+            
+        };
+        var failureCB = (msg) => {
+            console.log("failure");
+            console.log(msg);
+            
+        };
+        
+        window.easyrtc.call(otherEasyrtcid, successCB, failureCB, acceptedCB);
+        this.props.startVideoCall();
+        setTimeout(() => this.enableMirror(), 5000);
+    }
+    stopCall = () => {
+        window.easyrtc.hangupAll();
+        window.easyrtc.setVideoObjectSrc(document.getElementById(this.props.videoContactId), "");
+      
+        this.disableMirror();
+        this.props.endVideoCall();
+    }
+    hangupAll = () => {
+        window.easyrtc.hangupAll();
+    }
+
+
+    
+
+    enableMirror = () =>{
+        var selfVideo = document.getElementById(this.props.videoSelfId);
+        console.log(selfVideo);
+        window.easyrtc.setVideoObjectSrc(selfVideo, window.easyrtc.getLocalStream());
+        selfVideo.muted = true;
+    }
+    disableMirror = () => {
+        var selfVideo = document.getElementById(this.props.videoSelfId);
+        window.easyrtc.clearMediaStream( selfVideo);
+        window.easyrtc.setVideoObjectSrc(selfVideo,"");
+        window.easyrtc.closeLocalMediaStream();
     }
 
     login = (username, successCallback, failCallback) => {
@@ -110,7 +214,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setUsers: (users) => dispatch(setUsers(users)),
   addChatMessage: (chatObj) => dispatch(addChatMessage(chatObj)),
-  registerService: (name, serviceInstance) => dispatch(registerService(name, serviceInstance))
+  registerService: (name, serviceInstance) => dispatch(registerService(name, serviceInstance)),
+  startVideoCall: (userId) => dispatch(startVideoCall(userId)),
+  endVideoCall: () => dispatch(endVideoCall()),
+
+  acceptVideoCall: (userId) => dispatch(acceptVideoCall(userId)),
+  addPendingVideoCall: (userId, acceptCallback, rejectCallback) => dispatch(addPendingVideoCall(userId, acceptCallback, rejectCallback)),
+  rejectVideoCall: (userId) => dispatch(rejectVideoCall(userId)),
+
+
 });
 
 
